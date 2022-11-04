@@ -93,7 +93,7 @@
           <a href="#" class="">Forgotten password?</a>
           <hr>
 <%--          <button type="button" class="btn btn-success btn-lg mt-3">Create New Account</button>--%>
-          <button type="button" class="btn btn-success btn-lg mt-3"><a href="index.jsp" style="color: white; text-decoration: none" >Create New Account</a></button>
+          <button type="button" class="btn btn-success btn-lg mt-3"><a href="signup.jsp" style="color: white; text-decoration: none" >Create New Account</a></button>
         </div>
       </form>
       <p class="pt-3 text-center"><b>Create a Page</b> for a celebrity, band or business.</p>

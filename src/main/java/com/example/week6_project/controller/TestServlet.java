@@ -1,8 +1,7 @@
 package com.example.week6_project.controller;
 
 
-import com.example.week6_project.dbutil.impl.UserDbUtilImpl;
-import com.example.week6_project.model.CommentLike;
+import com.example.week6_project.dao.impl.UserDaoImpl;
 import com.example.week6_project.model.User;
 
 import javax.annotation.Resource;
@@ -20,7 +19,7 @@ import java.util.List;
 @WebServlet(name = "TestServlet", value = "/controller/TestServlet")
 public class TestServlet extends HttpServlet {
 
-    private UserDbUtilImpl userDbUtil;
+    private UserDaoImpl userDbUtil;
 
     @Resource(name = "jdbc/facebook_db")
     private DataSource dataSource;
@@ -29,7 +28,7 @@ public class TestServlet extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         try{
-            userDbUtil = new UserDbUtilImpl(dataSource);
+            userDbUtil = new UserDaoImpl(dataSource);
         } catch (Exception e) {
             throw new ServletException(e);
         }

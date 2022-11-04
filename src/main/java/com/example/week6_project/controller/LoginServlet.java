@@ -1,8 +1,10 @@
 package com.example.week6_project.controller;
 
-import com.example.week6_project.dbutil.impl.UserDbUtilImpl;
-import com.example.week6_project.dbutil.shared.Messages;
-import com.example.week6_project.model.User;
+import com.example.week6_project.dao.LoginDao;
+import com.example.week6_project.dao.impl.LoginDaoImpl;
+import com.example.week6_project.dao.impl.UserDaoImpl;
+import com.example.week6_project.dao.shared.Messages;
+import com.example.week6_project.model.UserData;
 
 import javax.annotation.Resource;
 import javax.servlet.*;
@@ -14,7 +16,7 @@ import java.io.IOException;
 @WebServlet(name = "LoginServlet", value = "/LoginServlet")
 public class LoginServlet extends HttpServlet {
 
-    private UserDbUtilImpl userDbUtil;
+    private LoginDao loginDao;
 
     @Resource(name = "jdbc/facebook_db")
     DataSource dataSource;
@@ -23,7 +25,7 @@ public class LoginServlet extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         try {
-            userDbUtil = new UserDbUtilImpl(dataSource);
+            loginDao = new LoginDaoImpl(dataSource);
         } catch (Exception e) {
             throw new ServletException(e);
         }
@@ -40,20 +42,51 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         RequestDispatcher dispatcher = null;
+        HttpSession session = request.getSession();
 
         try {
-            User user = userDbUtil.getUser(contact, password);
-            if (user != null) {
-                request.setAttribute("LoginResult", user);
-                dispatcher = request.getRequestDispatcher("/homepage.html");
+            UserData userData = loginDao.getUserData(contact, password);
+            if (userData != null) {
+                System.out.println(userData.getPostList());
+                String username = userData.getUser().getFirstname() + " " + userData.getUser().getLastname();
+                session.setAttribute("USERNAME", username);
+                session.setAttribute("USER", userData.getUser());
+                session.setAttribute("ID", userData.getUser().getId());
+                session.setAttribute("FIRSTNAME", userData.getUser().getFirstname());
+                session.setAttribute("NAME", (userData.getUser().getFirstname() + " " + userData.getUser().getLastname()));
+                session.setAttribute("LASTNAME", userData.getUser().getLastname());
+                session.setAttribute("CONTACT", userData.getUser().getContact());
+                session.setAttribute("PASSWORD", userData.getUser().getPassword());
+                String day = day(userData.getUser().getDob());
+                String month = month(userData.getUser().getDob());
+                String year = year(userData.getUser().getDob());
+                session.setAttribute("DAY", day);
+                session.setAttribute("MONTH", month);
+                session.setAttribute("YEAR", year);
+                session.setAttribute("GENDER", userData.getUser().getGender());
+                session.setAttribute("POSTS", userData.getPostList());
+                response.sendRedirect("/week6_project_war_exploded/homepage.jsp");
             } else  {
                 request.setAttribute("LoginResult", Messages.INCORRECT_LOGIN_DETAILS.getMessage());
                 dispatcher = request.getRequestDispatcher("/login.jsp");
+                dispatcher.forward(request, response);
             }
-            dispatcher.forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
+    private String day(String dob) {
+        return dob.substring(0, 2);
+    }
+
+    private String month(String dob) {
+        return dob.substring(2, 4);
+    }
+
+    private String year(String dob) {
+        return dob.substring(4);
+    }
+
 }

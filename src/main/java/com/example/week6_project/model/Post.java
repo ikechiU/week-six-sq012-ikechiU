@@ -8,16 +8,16 @@ public class Post {
     private List<PostLike> postLikes;
     private List<Comment> comments;
     private int user_id;
+    private String name;
 
     public Post() {
 
     }
 
-    public Post(int id, String message, int user_id, List<PostLike> postLikes) {
-        this.id = id;
+    public Post(String message, int user_id, String name) {
         this.message = message;
         this.user_id = user_id;
-        this.postLikes = postLikes;
+        this.name = name;
     }
 
     public Post(int id, String message) {
@@ -37,6 +37,15 @@ public class Post {
         this.postLikes = postLikes;
         this.comments = comments;
         this.user_id = user_id;
+    }
+
+    public Post(int id, String message, List<PostLike> postLikes, List<Comment> comments, int user_id, String name) {
+        this.id = id;
+        this.message = message;
+        this.postLikes = postLikes;
+        this.comments = comments;
+        this.user_id = user_id;
+        this.name = name;
     }
 
     public int getId() {
@@ -79,6 +88,14 @@ public class Post {
         this.user_id = user_id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -87,6 +104,7 @@ public class Post {
                 ", postLikes=" + postLikes +
                 ", comments=" + comments +
                 ", user_id=" + user_id +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

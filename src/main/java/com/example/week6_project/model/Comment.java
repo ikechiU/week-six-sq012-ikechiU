@@ -8,30 +8,35 @@ public class Comment {
     private List<CommentLike> commentLikes;
     private int post_id;
     private int user_id;
+    private String name;
 
     public Comment() {
     }
 
-    public Comment(String message, int post_id, int user_id) {
+    public Comment(String message, int post_id, int user_id, String name) {
         this.message = message;
         this.post_id = post_id;
         this.user_id = user_id;
+        this.name = name;
     }
 
-    public Comment(int id, String message, int post_id, int user_id) {
+    public Comment(int id, String message, int post_id, int user_id, String name) {
         this.id = id;
         this.message = message;
         this.post_id = post_id;
         this.user_id = user_id;
+        this.name = name;
     }
 
-    public Comment(int id, String message, List<CommentLike> commentLikes, int post_id, int user_id) {
+    public Comment(int id, String message, List<CommentLike> commentLikes, int post_id, int user_id, String name) {
         this.id = id;
         this.message = message;
         this.commentLikes = commentLikes;
         this.post_id = post_id;
-        this.user_id = post_id;
+        this.user_id = user_id;
+        this.name = name;
     }
+
 
     public int getId() {
         return id;
@@ -73,6 +78,14 @@ public class Comment {
         this.user_id = user_id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
@@ -81,6 +94,7 @@ public class Comment {
                 ", commentLikes=" + commentLikes +
                 ", post_id=" + post_id +
                 ", user_id=" + user_id +
+                ", name='" + name + '\'' +
                 '}';
     }
 }
