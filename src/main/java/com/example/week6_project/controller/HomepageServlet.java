@@ -6,6 +6,7 @@ import com.example.week6_project.dao.PostDao;
 import com.example.week6_project.dao.impl.CommentDaoImpl;
 import com.example.week6_project.dao.impl.CommentLikeDaoImpl;
 import com.example.week6_project.dao.impl.PostDaoImpl;
+import com.example.week6_project.dao.shared.ProvideConnection;
 import com.example.week6_project.model.Post;
 
 import javax.annotation.Resource;
@@ -36,26 +37,35 @@ public class HomePageServlet extends HttpServlet {
     String year = "";
     String password = "";
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        try{
-            postDao = new PostDaoImpl(dataSource);
-            commentDao = new CommentDaoImpl(dataSource);
-            commentLikeDao = new CommentLikeDaoImpl(dataSource);
-        }catch (Exception e) {
-            throw new ServletException(e);
-        }
+//    @Override
+//    public void init() throws ServletException {
+//        super.init();
+//        try{
+//            postDao = new PostDaoImpl(dataSource);
+//            commentDao = new CommentDaoImpl(dataSource);
+//            commentLikeDao = new CommentLikeDaoImpl(dataSource);
+//        }catch (Exception e) {
+//            throw new ServletException(e);
+//        }
+//    }
+
+    private void initImpl() {
+        DataSource ds = ProvideConnection.dataSource();
+        postDao = new PostDaoImpl(ds);
+        commentDao = new CommentDaoImpl(ds);
+        commentLikeDao = new CommentLikeDaoImpl(ds);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        initImpl();
         setParameters(request);
         handleHttpRequest(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        initImpl();
         setParameters(request);
         handleHttpRequest(request, response);
     }

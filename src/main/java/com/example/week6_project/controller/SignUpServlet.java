@@ -4,9 +4,11 @@ import com.example.week6_project.dao.CommentDao;
 import com.example.week6_project.dao.PostDao;
 import com.example.week6_project.dao.SignUpDao;
 import com.example.week6_project.dao.impl.CommentDaoImpl;
+import com.example.week6_project.dao.impl.CommentLikeDaoImpl;
 import com.example.week6_project.dao.impl.PostDaoImpl;
 import com.example.week6_project.dao.impl.SignUpDaoImpl;
 import com.example.week6_project.dao.shared.Messages;
+import com.example.week6_project.dao.shared.ProvideConnection;
 import com.example.week6_project.model.Post;
 import com.example.week6_project.model.User;
 import com.example.week6_project.model.UserData;
@@ -30,20 +32,28 @@ public class SignUpServlet extends HttpServlet {
     @Resource(name = "jdbc/facebook_db")
     DataSource dataSource;
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        try {
-            signUpDao = new SignUpDaoImpl(dataSource);
-            postDao = new PostDaoImpl(dataSource);
-            commentDao = new CommentDaoImpl(dataSource);
-        } catch (Exception e) {
-            throw new ServletException(e);
-        }
+//    @Override
+//    public void init() throws ServletException {
+//        super.init();
+//        try {
+//            signUpDao = new SignUpDaoImpl(dataSource);
+//            postDao = new PostDaoImpl(dataSource);
+//            commentDao = new CommentDaoImpl(dataSource);
+//        } catch (Exception e) {
+//            throw new ServletException(e);
+//        }
+//    }
+
+    private void initImpl() {
+        DataSource ds = ProvideConnection.dataSource();
+        signUpDao = new SignUpDaoImpl(ds);
+        postDao = new PostDaoImpl(ds);
+        commentDao = new CommentDaoImpl(ds);
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        initImpl();
         try {
             //read the command parameter
             String theCommand = request.getParameter("command");
@@ -100,6 +110,7 @@ public class SignUpServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        initImpl();
         try {
             update(request, response);
         } catch (Exception e) {

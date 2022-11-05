@@ -1,7 +1,9 @@
 package com.example.week6_project.controller;
 
 
+import com.example.week6_project.dao.UserDao;
 import com.example.week6_project.dao.impl.UserDaoImpl;
+import com.example.week6_project.dao.shared.ProvideConnection;
 import com.example.week6_project.model.User;
 
 import javax.annotation.Resource;
@@ -19,32 +21,33 @@ import java.util.List;
 @WebServlet(name = "TestServlet", value = "/controller/TestServlet")
 public class TestServlet extends HttpServlet {
 
-    private UserDaoImpl userDbUtil;
-
-    @Resource(name = "jdbc/facebook_db")
-    private DataSource dataSource;
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        try{
-            userDbUtil = new UserDaoImpl(dataSource);
-        } catch (Exception e) {
-            throw new ServletException(e);
-        }
-    }
+//    private UserDao userDao;
+//
+//    @Resource(name = "jdbc/facebook_db")
+//    private DataSource dataSource;
+//
+//    @Override
+//    public void init() throws ServletException {
+//        super.init();
+//        try{
+//            userDao = new UserDaoImpl(dataSource);
+//        } catch (Exception e) {
+//            throw new ServletException(e);
+//        }
+//    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         try {
             PrintWriter out = response.getWriter();
-            response.setContentType("text/plain");
+//            response.setContentType("text/plain");
+            UserDao userDao = new UserDaoImpl(ProvideConnection.connect());
 
-            List<User> usersList = userDbUtil.getUsers();
-            for (User user: usersList) {
-                out.println(user);
-            }
+//            List<User> usersList = userDao.getUsersDriverManager();
+//            for (User user: usersList) {
+//                out.println(user.getFirstname());
+//            }
 
 //            for (User user: usersList) {
 //                out.println(user.getPosts());
@@ -59,6 +62,11 @@ public class TestServlet extends HttpServlet {
 //                out.println(comment);
 //            }
 
+            String name = userDao.getUsersDriverManager().get(0).getFirstname();
+            out.println(name);
+            out.println(name);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,6 +75,11 @@ public class TestServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String contact = request.getParameter("contact");
+        String password = request.getParameter("password");
 
+        PrintWriter out = response.getWriter();
+        out.println(contact);
+        out.println(password);
     }
 }

@@ -4,6 +4,7 @@ import com.example.week6_project.dao.LoginDao;
 import com.example.week6_project.dao.impl.LoginDaoImpl;
 import com.example.week6_project.dao.impl.UserDaoImpl;
 import com.example.week6_project.dao.shared.Messages;
+import com.example.week6_project.dao.shared.ProvideConnection;
 import com.example.week6_project.model.UserData;
 
 import javax.annotation.Resource;
@@ -12,6 +13,7 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @WebServlet(name = "LoginServlet", value = "/LoginServlet")
 public class LoginServlet extends HttpServlet {
@@ -21,15 +23,16 @@ public class LoginServlet extends HttpServlet {
     @Resource(name = "jdbc/facebook_db")
     DataSource dataSource;
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        try {
-            loginDao = new LoginDaoImpl(dataSource);
-        } catch (Exception e) {
-            throw new ServletException(e);
-        }
-    }
+//    @Override
+//    public void init() throws ServletException {
+//        super.init();
+//        try {
+//            loginDao = new LoginDaoImpl(dataSource);
+//        } catch (Exception e) {
+//            throw new ServletException(e);
+//        }
+//    }
+//
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -45,6 +48,7 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         try {
+            loginDao = new LoginDaoImpl(ProvideConnection.dataSource());
             UserData userData = loginDao.getUserData(contact, password);
             if (userData != null) {
                 System.out.println(userData.getPostList());
