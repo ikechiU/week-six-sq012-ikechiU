@@ -7,5 +7,4 @@ import java.util.List;
 public interface UserDao {
     List<User> getUsers() throws Exception;
     User getUserNameById(int user_id) throws Exception;
-    List<User> getUsersDriverManager() throws Exception;
 }

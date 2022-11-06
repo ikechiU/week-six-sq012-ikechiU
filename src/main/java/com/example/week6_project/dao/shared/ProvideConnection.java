@@ -1,6 +1,7 @@
 package com.example.week6_project.dao.shared;
 
 import com.mchange.v2.c3p0.DriverManagerDataSource;
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import javax.sql.DataSource;
@@ -20,24 +21,6 @@ public class ProvideConnection {
         }
     }
 
-//    public static DataSource dataSource() {
-//        MysqlDataSource dataSource = new MysqlDataSource();
-//        dataSource.setDatabaseName("facebook_db");
-//        dataSource.setURL("jdbc:mysql://localhost:3306/facebook_db?allowPublicKeyRetrieval=true&serverTimezone=UTC");
-//        dataSource.setUser("user");
-//        dataSource.setPassword("user");
-//        return dataSource;
-//    }
-
-//    public static DataSource dataSource(){
-//        DriverManagerDataSource ds = new DriverManagerDataSource();
-//        ds.setUser("user");
-//        ds.setDriverClass("com.mysql.cj.jdbc.Driver");
-//        ds.setJdbcUrl("jdbc:mysql://localhost:3306/facebook_db?allowPublicKeyRetrieval=true&serverTimezone=UTC");
-//        ds.setPassword("root");
-//        return ds;
-//    }
-
 
     public static DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();
@@ -50,4 +33,23 @@ public class ProvideConnection {
         dataSource.setMaxWait(10000);
         return dataSource;
     }
+
+//    public static DataSource dataSource1() {
+//        MysqlDataSource dataSource = new MysqlDataSource();
+//        dataSource.setDatabaseName("facebook_db");
+//        dataSource.setURL("jdbc:mysql://localhost:3306/facebook_db?allowPublicKeyRetrieval=true&serverTimezone=UTC");
+//        dataSource.setUser("user");
+//        dataSource.setPassword("user");
+//        return dataSource;
+//    }
+
+//    public static DataSource dataSource2(){
+//        DriverManagerDataSource ds = new DriverManagerDataSource();
+//        ds.setUser("user");
+//        ds.setDriverClass("com.mysql.cj.jdbc.Driver");
+//        ds.setJdbcUrl("jdbc:mysql://localhost:3306/facebook_db?allowPublicKeyRetrieval=true&serverTimezone=UTC");
+//        ds.setPassword("root");
+//        return ds;
+//    }
+
 }

@@ -81,11 +81,10 @@
       <form class="login-form" action="LoginServlet" method="POST">
         <input type="hidden" name="command" value="LOGIN" />
         <div class="mb-3">
-          <input type="text" name="contact" class="form-control" placeholder="Email address or phone number" required>
+          <input type="text" name="contact" value="${CONTACT_LOGIN}" class="form-control" placeholder="Email address or phone number" required>
         </div>
         <div class="mb-3">
-          <input type="password" name="password" class="form-control" placeholder="Password"
-                 required>
+          <input type="password" name="password" value="${CONTACT_PASSWORD}" class="form-control" placeholder="Password" required>
         </div>
         <input type="submit"  class="btn btn-custom btn-lg btn-block mt-3" value="Login"/>
 <%--        <button type="button" class="btn btn-custom btn-lg btn-block mt-3">Login</button>--%>

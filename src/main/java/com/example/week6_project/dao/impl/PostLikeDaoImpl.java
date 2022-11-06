@@ -1,6 +1,7 @@
 package com.example.week6_project.dao.impl;
 
 import com.example.week6_project.dao.PostLikeDao;
+import com.example.week6_project.dao.shared.ProvideConnection;
 import com.example.week6_project.model.PostLike;
 
 import javax.sql.DataSource;
@@ -15,12 +16,7 @@ import static com.example.week6_project.dao.shared.DbUtils.close;
 
 public class PostLikeDaoImpl implements PostLikeDao {
 
-    private final DataSource dataSource;
-
-    public PostLikeDaoImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
+    private final DataSource dataSource = ProvideConnection.dataSource();
 
     @Override
     public List<PostLike> getPostLikes() throws Exception {

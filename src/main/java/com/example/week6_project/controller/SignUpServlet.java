@@ -20,6 +20,7 @@ import javax.servlet.annotation.*;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet(name = "SignUpServlet", value = "/SignUpServlet")
 public class SignUpServlet extends HttpServlet {
@@ -29,31 +30,24 @@ public class SignUpServlet extends HttpServlet {
     private CommentDao commentDao;
     private  RequestDispatcher dispatcher = null;
 
-    @Resource(name = "jdbc/facebook_db")
-    DataSource dataSource;
+//    @Resource(name = "jdbc/facebook_db")
+//    DataSource dataSource;
 
-//    @Override
-//    public void init() throws ServletException {
-//        super.init();
-//        try {
-//            signUpDao = new SignUpDaoImpl(dataSource);
-//            postDao = new PostDaoImpl(dataSource);
-//            commentDao = new CommentDaoImpl(dataSource);
-//        } catch (Exception e) {
-//            throw new ServletException(e);
-//        }
-//    }
-
-    private void initImpl() {
-        DataSource ds = ProvideConnection.dataSource();
-        signUpDao = new SignUpDaoImpl(ds);
-        postDao = new PostDaoImpl(ds);
-        commentDao = new CommentDaoImpl(ds);
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        try {
+            signUpDao = new SignUpDaoImpl();
+            postDao = new PostDaoImpl();
+            commentDao = new CommentDaoImpl();
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
     }
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        initImpl();
         try {
             //read the command parameter
             String theCommand = request.getParameter("command");
@@ -79,9 +73,15 @@ public class SignUpServlet extends HttpServlet {
     private void addUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
         boolean isExisting = signUpDao.isExisting(request.getParameter("contact"));
         if (!isExisting) {
-            signUpDao.addUser(getUser(request));
-            request.setAttribute("RegistrationResult", Messages.SUCCESSFUL_REGISTRATION.getMessage());
-            dispatcher = request.getRequestDispatcher("/login.jsp");
+            Optional<User> optionalUser = signUpDao.addUser(getUser(request));
+            if (optionalUser.isPresent()) {
+                System.out.println(optionalUser.get());
+                request.setAttribute("CONTACT_LOGIN", optionalUser.get().getContact());
+                request.setAttribute("CONTACT_PASSWORD", optionalUser.get().getPassword());
+                request.setAttribute("RegistrationResult", Messages.SUCCESSFUL_REGISTRATION.getMessage());
+                dispatcher = request.getRequestDispatcher("/login.jsp");
+            }
+
         } else {
             request.setAttribute("RegistrationResult", Messages.UNSUCCESSFUL_REGISTRATION.getMessage());
             dispatcher = request.getRequestDispatcher("signup.jsp");
@@ -110,7 +110,6 @@ public class SignUpServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        initImpl();
         try {
             update(request, response);
         } catch (Exception e) {

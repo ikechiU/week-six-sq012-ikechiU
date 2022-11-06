@@ -1,6 +1,7 @@
 package com.example.week6_project.dao.impl;
 
 import com.example.week6_project.dao.CommentLikeDao;
+import com.example.week6_project.dao.shared.ProvideConnection;
 import com.example.week6_project.model.CommentLike;
 
 import javax.sql.DataSource;
@@ -16,11 +17,7 @@ import static com.example.week6_project.dao.shared.DbUtils.close;
 
 public class CommentLikeDaoImpl implements CommentLikeDao {
 
-    private final DataSource dataSource;
-
-    public CommentLikeDaoImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private final DataSource dataSource = ProvideConnection.dataSource();
 
     @Override
     public List<CommentLike> getCommentLikesByCommentId(int comment_id) throws Exception{

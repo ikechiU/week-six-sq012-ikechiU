@@ -37,35 +37,26 @@ public class HomePageServlet extends HttpServlet {
     String year = "";
     String password = "";
 
-//    @Override
-//    public void init() throws ServletException {
-//        super.init();
-//        try{
-//            postDao = new PostDaoImpl(dataSource);
-//            commentDao = new CommentDaoImpl(dataSource);
-//            commentLikeDao = new CommentLikeDaoImpl(dataSource);
-//        }catch (Exception e) {
-//            throw new ServletException(e);
-//        }
-//    }
-
-    private void initImpl() {
-        DataSource ds = ProvideConnection.dataSource();
-        postDao = new PostDaoImpl(ds);
-        commentDao = new CommentDaoImpl(ds);
-        commentLikeDao = new CommentLikeDaoImpl(ds);
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        try{
+            postDao = new PostDaoImpl();
+            commentDao = new CommentDaoImpl();
+            commentLikeDao = new CommentLikeDaoImpl();
+        }catch (Exception e) {
+            throw new ServletException(e);
+        }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        initImpl();
         setParameters(request);
         handleHttpRequest(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        initImpl();
         setParameters(request);
         handleHttpRequest(request, response);
     }
@@ -146,8 +137,7 @@ public class HomePageServlet extends HttpServlet {
 
     private void likePost(HttpServletRequest request, HttpServletResponse response) throws Exception {
         int post_id = Integer.parseInt(request.getParameter("post_id"));
-        postDao.like(user_id, post_id);
-        List<Post> postList = postDao.getPosts();
+        List<Post> postList = postDao.like(user_id, post_id);
         loadSession(request, response, postList);
     }
 
@@ -179,15 +169,13 @@ public class HomePageServlet extends HttpServlet {
     private void updatePost(HttpServletRequest request, HttpServletResponse response) throws Exception{
         String message = request.getParameter("post_update");
         int post_id = Integer.parseInt(request.getParameter("post_id"));
-        postDao.update(user_id, post_id, message);
-        List<Post> postList = postDao.getPosts();
+        List<Post> postList = postDao.update(user_id, post_id, message);
         loadSession(request, response, postList);
     }
 
     private void deletePost(HttpServletRequest request, HttpServletResponse response) throws Exception {
         int post_id = Integer.parseInt(request.getParameter("post_id"));
-        postDao.delete(user_id, post_id);
-        List<Post> postList = postDao.getPosts();
+        List<Post> postList = postDao.delete(user_id, post_id);
         loadSession(request, response, postList);
     }
 

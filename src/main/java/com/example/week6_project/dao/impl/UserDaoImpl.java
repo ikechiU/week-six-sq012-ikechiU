@@ -14,16 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoImpl extends DbUtils implements UserDao {
-    private DataSource dataSource;
     private Connection connection;
 
-    public UserDaoImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public UserDaoImpl(Connection connection) {
-        this.connection = connection;
-    }
+    private final DataSource dataSource = ProvideConnection.dataSource();
 
     @Override
     public List<User> getUsers() throws Exception {
@@ -35,40 +28,6 @@ public class UserDaoImpl extends DbUtils implements UserDao {
 
         try {
             myConn = dataSource.getConnection();
-            String sql = "SELECT * FROM users";
-            myStmt = myConn.createStatement();
-            myRs = myStmt.executeQuery(sql);
-
-            while (myRs.next()) {
-                int id = myRs.getInt("id");
-                String firstname = myRs.getString("firstname");
-                String lastname = myRs.getString("lastname");
-                String contact = myRs.getString("contact");
-                String password = myRs.getString("password");
-                String dob = myRs.getString("dob");
-                String gender = myRs.getString("gender");
-
-                User user = new User(id, firstname, lastname, contact, password, dob, gender);
-                users.add(user);
-            }
-
-            //return userList(users);
-            return users;
-        } finally {
-            close(myConn, myStmt, myRs);
-        }
-    }
-
-    @Override
-    public List<User> getUsersDriverManager() throws Exception {
-        List<User> users = new ArrayList<>();
-
-        Connection myConn = null;
-        Statement myStmt = null;
-        ResultSet myRs = null;
-
-        try {
-            myConn = connection;
             String sql = "SELECT * FROM users";
             myStmt = myConn.createStatement();
             myRs = myStmt.executeQuery(sql);

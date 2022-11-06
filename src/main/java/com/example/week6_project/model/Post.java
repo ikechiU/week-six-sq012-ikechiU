@@ -31,6 +31,13 @@ public class Post {
         this.user_id = user_id;
     }
 
+    public Post(int id, String message, int user_id, String name) {
+        this.id = id;
+        this.message = message;
+        this.user_id = user_id;
+        this.name = name;
+    }
+
     public Post(int id, String message, List<PostLike> postLikes, List<Comment> comments, int user_id) {
         this.id = id;
         this.message = message;

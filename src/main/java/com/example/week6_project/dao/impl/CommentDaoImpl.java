@@ -1,6 +1,7 @@
 package com.example.week6_project.dao.impl;
 
 import com.example.week6_project.dao.CommentDao;
+import com.example.week6_project.dao.shared.ProvideConnection;
 import com.example.week6_project.model.Comment;
 import com.example.week6_project.model.CommentLike;
 import com.example.week6_project.model.UserData;
@@ -14,10 +15,7 @@ import static com.example.week6_project.dao.shared.DbUtils.close;
 
 public class CommentDaoImpl implements CommentDao {
 
-    private final DataSource dataSource;
-    public CommentDaoImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private final DataSource dataSource = ProvideConnection.dataSource();
 
     @Override
     public List<Comment> getComments() throws Exception {
@@ -39,7 +37,7 @@ public class CommentDaoImpl implements CommentDao {
                 int post_id = myRs.getInt("post_id");
                 int user_id = myRs.getInt("user_id");
                 String name = myRs.getString("name");
-                List<CommentLike> commentLikes = new CommentLikeDaoImpl(dataSource).getCommentLikesByCommentId(id);
+                List<CommentLike> commentLikes = new CommentLikeDaoImpl().getCommentLikesByCommentId(id);
                 Comment comment = new Comment(id, message, commentLikes, post_id, user_id, name);
                 comments.add(comment);
             }
@@ -75,7 +73,7 @@ public class CommentDaoImpl implements CommentDao {
             }
 
             for (Comment comment: comments) {
-                List<CommentLike> commentLikes = new CommentLikeDaoImpl(dataSource).getCommentLikesByCommentId(comment.getId());
+                List<CommentLike> commentLikes = new CommentLikeDaoImpl().getCommentLikesByCommentId(comment.getId());
                 comment.setCommentLikes(commentLikes);
             }
             return comments;

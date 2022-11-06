@@ -1,6 +1,7 @@
 package com.example.week6_project.dao.impl;
 
 import com.example.week6_project.dao.PostDao;
+import com.example.week6_project.dao.shared.ProvideConnection;
 import com.example.week6_project.model.*;
 
 import javax.sql.DataSource;
@@ -11,11 +12,7 @@ import java.util.List;
 import static com.example.week6_project.dao.shared.DbUtils.close;
 
 public class PostDaoImpl implements PostDao {
-    private final DataSource dataSource;
-
-    public PostDaoImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private final DataSource dataSource = ProvideConnection.dataSource();
 
     @Override
     public List<Post> getPosts() throws Exception {
@@ -33,8 +30,8 @@ public class PostDaoImpl implements PostDao {
             while (myRs.next()) {
                 int id = myRs.getInt("id");
                 String message = myRs.getString("message");
-                List<PostLike> postLikes = new PostLikeDaoImpl(dataSource).getPostLikesByPostId(id);
-                List<Comment> comments = new CommentDaoImpl(dataSource).getCommentsByPostId(id);
+                List<PostLike> postLikes = new PostLikeDaoImpl().getPostLikesByPostId(id);
+                List<Comment> comments = new CommentDaoImpl().getCommentsByPostId(id);
                 int user_id = myRs.getInt("user_id");
                 String name = myRs.getString("name");
                 Post post = new Post(id, message, postLikes, comments, user_id, name);
@@ -63,8 +60,8 @@ public class PostDaoImpl implements PostDao {
             while (true) {
                 if (myRs.next()) {
                     int id = myRs.getInt("id");
-                    List<PostLike> postLikes = new PostLikeDaoImpl(dataSource).getPostLikesByPostId(id);
-                    List<Comment> comments = new CommentDaoImpl(dataSource).getCommentsByPostId(id);
+                    List<PostLike> postLikes = new PostLikeDaoImpl().getPostLikesByPostId(id);
+                    List<Comment> comments = new CommentDaoImpl().getCommentsByPostId(id);
                     String message = myRs.getString("message");
                     String name = myRs.getString("name");
                     Post post = new Post(id, message, postLikes, comments,  user_id, name);
@@ -79,7 +76,7 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public void updateUser(int id, String name) throws SQLException {
+    public String updateUser(int id, String name) throws Exception {
         Connection myConn = null;
         PreparedStatement myStmt = null;
 
@@ -90,7 +87,10 @@ public class PostDaoImpl implements PostDao {
             myStmt = myConn.prepareStatement(sql);
             myStmt.setString(1, name);
             myStmt.setInt(2, id);
-            myStmt.execute();
+            boolean result = myStmt.execute();
+
+            if (result) return name;
+            else return null;
 
         } finally {
             close(myConn, myStmt, null);
@@ -123,7 +123,7 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public void delete(int user_id, int post_id) throws Exception {
+    public List<Post> delete(int user_id, int post_id) throws Exception {
         Connection myConn = null;
         PreparedStatement myStmt = null;
 
@@ -138,10 +138,12 @@ public class PostDaoImpl implements PostDao {
         } finally {
             close(myConn, myStmt, null);
         }
+
+        return getPosts();
     }
 
     @Override
-    public void update(int user_id, int post_id, String message) throws Exception {
+    public List<Post> update(int user_id, int post_id, String message) throws Exception {
         Connection myConn = null;
         PreparedStatement myStmt = null;
 
@@ -158,10 +160,12 @@ public class PostDaoImpl implements PostDao {
         } finally {
             close(myConn, myStmt, null);
         }
+
+        return getPosts();
     }
 
     @Override
-    public void like(int user_id, int post_id) throws Exception {
+    public List<Post> like(int user_id, int post_id) throws Exception {
         Connection myConn = null;
         PreparedStatement myStmt = null;
         ResultSet myRs = null;
@@ -193,6 +197,8 @@ public class PostDaoImpl implements PostDao {
         } finally {
             close(myConn, myStmt, myRs);
         }
+
+        return getPosts();
     }
 
 

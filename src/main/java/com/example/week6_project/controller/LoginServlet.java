@@ -20,19 +20,18 @@ public class LoginServlet extends HttpServlet {
 
     private LoginDao loginDao;
 
-    @Resource(name = "jdbc/facebook_db")
-    DataSource dataSource;
+//    @Resource(name = "jdbc/facebook_db")
+//    DataSource dataSource;
 
-//    @Override
-//    public void init() throws ServletException {
-//        super.init();
-//        try {
-//            loginDao = new LoginDaoImpl(dataSource);
-//        } catch (Exception e) {
-//            throw new ServletException(e);
-//        }
-//    }
-//
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        try {
+            loginDao = new LoginDaoImpl();
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -48,7 +47,6 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         try {
-            loginDao = new LoginDaoImpl(ProvideConnection.dataSource());
             UserData userData = loginDao.getUserData(contact, password);
             if (userData != null) {
                 System.out.println(userData.getPostList());
